@@ -1,6 +1,7 @@
 import 'package:ccapp_front/screens/sign_in.dart';
 import 'package:ccapp_front/style/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -28,12 +29,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  static const storage = FlutterSecureStorage();
+  Future<void> logout() async {
+    final token = await storage.read(key: 'login');
+    if (token != null) await storage.delete(key: 'login');
+    push();
+  }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void push() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SignInPage(),
+      ),
+    );
   }
 
   @override
@@ -45,19 +54,33 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+          children: const [
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              '메인 화면',
+              style: TextStyle(fontSize: 32),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: const Text('로그아웃 하시겠습니까?'),
+              actions: [
+                TextButton(
+                  onPressed: logout,
+                  child: const Text('예'),
+                ),
+                TextButton(
+                  onPressed: Navigator.of(context).pop,
+                  child: const Text('아니오'),
+                ),
+              ],
+            ),
+          );
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),

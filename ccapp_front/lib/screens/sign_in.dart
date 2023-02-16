@@ -1,7 +1,13 @@
+import 'dart:convert';
+
+import 'package:ccapp_front/main.dart';
+import 'package:ccapp_front/models/user.dart';
 import 'package:ccapp_front/screens/sign_up.dart';
 import 'package:ccapp_front/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -14,11 +20,67 @@ class _SignInPageState extends State<SignInPage> {
   late final TextEditingController idController;
   late final TextEditingController pwController;
 
+  static const storage = FlutterSecureStorage();
+  final String baseUrl = '125.129.144.42:3000';
+  AccessToken? token;
+
   @override
   void initState() {
     super.initState();
     idController = TextEditingController();
     pwController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkLogin());
+  }
+
+  Future<void> _checkLogin() async {
+    final stored = await storage.read(key: 'login');
+    if (stored == null) return;
+    token = AccessToken.fromJson(jsonDecode(stored));
+    push(token);
+  }
+
+  void loginAction(String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://$baseUrl/login'),
+        body: jsonEncode({
+          'EMAIL': email,
+          'PASSWORD': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        await storage.write(key: 'login', value: response.body);
+        push(AccessToken.fromJson(jsonDecode(response.body)));
+      }
+    } catch (e) {
+      print('api fetch failed on: $e');
+    }
+  }
+
+  void push(AccessToken? token) {
+    print(':: ${token?.accessToken}');
+    if (token == null) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: const Text('로그인에 실패했습니다.'),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: Navigator.of(context).pop,
+                child: const Text('확인'),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    }
   }
 
   @override
@@ -62,7 +124,10 @@ class _SignInPageState extends State<SignInPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => loginAction(
+                  idController.text,
+                  pwController.text,
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: CCColor.primary,
                   shape: RoundedRectangleBorder(

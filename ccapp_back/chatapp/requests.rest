@@ -1,0 +1,29 @@
+GET http://localhost:3000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiY2hhbmhlZTEyMyIsImlhdCI6MTY3NTgyMjczNiwiZXhwIjoxNjc1ODIyNzUxfQ.ROZNQh4qq3KAVAAQRbzpxihYSLw1wJwZR3GdrXEiQXM
+
+###
+
+DELETE http://localhost:3000/logout
+Content-Type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiY2hhbmhlZTEyMyIsImlhdCI6MTY3NTgxOTk4MX0.TRfRmOLcJZKptJaXis7QiUiSGcZy9Wno8a2MCw8YWwo"
+}
+
+###
+POST http://localhost:3000/token
+Content-Type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiY2hhbmhlZTEyMyIsImlhdCI6MTY3NTgxOTk4MX0.TRfRmOLcJZKptJaXis7QiUiSGcZy9Wno8a2MCw8YWwo"
+}
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username":"chanhee123"
+    
+}

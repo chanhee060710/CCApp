@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:ccapp_front/screens/sign_in.dart';
 import 'package:ccapp_front/style/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -14,6 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   late final TextEditingController pwConfirmController;
   late final TextEditingController nicknameController;
   late final TextEditingController phoneController;
+  final String baseUrl = '125.129.144.42:3000';
 
   @override
   void initState() {
@@ -23,6 +28,78 @@ class _SignUpPageState extends State<SignUpPage> {
     pwConfirmController = TextEditingController();
     nicknameController = TextEditingController();
     phoneController = TextEditingController();
+  }
+
+  void signUpAction(
+    String email,
+    String password,
+    String nickname,
+    String phone,
+  ) async {
+    try {
+      print(jsonEncode({
+        'EMAIL': email,
+        'PASSWORD': password,
+        'NICKNAME': nickname,
+        'PHONENUMBER': phone,
+      }));
+      final response = await http.post(
+        Uri.parse('http://$baseUrl/signIn'),
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: jsonEncode({
+          'EMAIL': email,
+          'PASSWORD': password,
+          'NICKNAME': nickname,
+          'PHONENUMBER': phone,
+        }),
+      );
+
+      if (response.statusCode == 200 && response.body == 'success') {
+        push();
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: const Text('로그인에 실패했습니다.'),
+            actions: [
+              Center(
+                child: TextButton(
+                  onPressed: Navigator.of(context).pop,
+                  child: const Text('확인'),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      print('api fetch failed on: $e');
+    }
+  }
+
+  void push() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const Text('회원가입에 성공했습니다.'),
+        actions: [
+          Center(
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SignInPage()),
+                );
+              },
+              child: const Text('확인'),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -120,7 +197,50 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               const Spacer(flex: 8),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (idController.text.isEmpty ||
+                      pwController.text.isEmpty ||
+                      nicknameController.text.isEmpty ||
+                      phoneController.text.isEmpty) {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        content: const Center(
+                          child: Text('회원정보를 다시 입력해주세요.'),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: Navigator.of(context).pop,
+                            child: const Text('확인'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (pwController.text != pwConfirmController.text) {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        content: const Center(
+                          child: Text('비밀번호가 일치하지 않습니다.'),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: Navigator.of(context).pop,
+                            child: const Text('확인'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    print('zzzz');
+                    signUpAction(
+                      idController.text,
+                      pwController.text,
+                      nicknameController.text,
+                      phoneController.text,
+                    );
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: CCColor.primary,
                   shape: RoundedRectangleBorder(
