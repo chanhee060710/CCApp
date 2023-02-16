@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ccapp_front/screens/sign_in.dart';
+import 'package:ccapp_front/service/config.dart';
 import 'package:ccapp_front/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,6 @@ class _SignUpPageState extends State<SignUpPage> {
   late final TextEditingController pwConfirmController;
   late final TextEditingController nicknameController;
   late final TextEditingController phoneController;
-  final String baseUrl = '125.129.144.42:3000';
 
   @override
   void initState() {

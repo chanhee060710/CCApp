@@ -1,0 +1,23 @@
+{
+    "lee": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": "",
+        "port": ""
+    },
+    "park": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": "",
+        "port": ""
+    },
+    "zhu": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": "",
+        "port": ""
+    }
+}

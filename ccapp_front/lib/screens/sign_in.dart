@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ccapp_front/main.dart';
 import 'package:ccapp_front/models/user.dart';
 import 'package:ccapp_front/screens/sign_up.dart';
+import 'package:ccapp_front/service/config.dart';
 import 'package:ccapp_front/style/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,6 @@ class _SignInPageState extends State<SignInPage> {
   late final TextEditingController pwController;
 
   static const storage = FlutterSecureStorage();
-  final String baseUrl = '125.129.144.42:3000';
   AccessToken? token;
 
   @override
