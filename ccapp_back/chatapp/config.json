@@ -1,23 +1,23 @@
 {
     "lee": {
-        "host": "",
-        "user": "",
-        "password": "",
-        "database": "",
-        "port": ""
+        "host": "localhost",
+        "user": "root",
+        "password": "060710",
+        "database": "chat_app",
+        "port": "3300"
     },
     "park": {
-        "host": "",
-        "user": "",
-        "password": "",
-        "database": "",
-        "port": ""
+        "host": "localhost",
+        "user": "root",
+        "password": "!870724",
+        "database": "mydatabase",
+        "port": "3306"
     },
     "zhu": {
-        "host": "",
-        "user": "",
-        "password": "",
-        "database": "",
-        "port": ""
+        "host": "localhost",
+        "user": "root",
+        "password": "060710",
+        "database": "chat_app",
+        "port": "3300"
     }
 }
